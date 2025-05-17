@@ -2,9 +2,11 @@
   "name": "myantype-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "seed": "node prisma/seed.js",
+    "cleanup": "node prisma/cleanup.js"
   },
   "keywords": [],
   "author": "",
@@ -13,11 +15,14 @@
   "dependencies": {
     "@prisma/client": "^6.7.0",
     "@supabase/supabase-js": "^2.49.4",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "nanoid": "^5.1.5"
   },
   "devDependencies": {
     "dotenv": "^16.5.0",
     "prisma": "^6.7.0"
   }
 }
+
