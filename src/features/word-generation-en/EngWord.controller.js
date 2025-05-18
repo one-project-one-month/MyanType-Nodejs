@@ -52,8 +52,8 @@ export const generateParagraph = (req, res) => {
       const paragraph = getShuffledParagraph();
       console.log("Request paragraph received:", req.body); 
       res.json({ paragraph });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ error: err.message });
-  }
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: err.message });
+    }
 }
