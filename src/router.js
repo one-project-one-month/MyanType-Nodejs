@@ -1,6 +1,6 @@
 import authRouter from "./features/auth/auth.routes.js";
 import { Router } from "express";
-import engWordRouter from "./features/word-generation-en/EngWord-API/EngWord.routes.js";
+import engWordRouter from "./features/word-generation-en/EngWord.routes.js";
 
 
 const router = Router();
