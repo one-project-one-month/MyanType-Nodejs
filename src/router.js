@@ -1,11 +1,11 @@
 import authRouter from "./features/auth/auth.routes.js";
 import { Router } from "express";
-import engWordRouter from "./features/word-generation-en/EngWord.routes.js";
+import WordRouter from "./features/word-generation-en/word.routes.js";
 
 
 const router = Router();
 
 router.use("/auth", authRouter);
-router.use("/engword", engWordRouter);
+router.use("/engword", WordRouter);
 
 export default router;
