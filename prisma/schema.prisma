@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -15,11 +14,38 @@ model User {
   password  String
   createdAt DateTime @default(now())
 
-  testSessions      TestSession[]
-  themes            Theme[]
-  customTexts       CustomText[]
-  challengesCreated Challenge[]   @relation("Inviter")
-  challengesJoined  Challenge[]   @relation("Invitee")
+  testSessions TestSession[]
+  themes       Theme[]
+  customTexts  CustomText[]
+
+  challengeCreated Challenge? @relation("Inviter") // one-to-one
+  challengeJoined  Challenge? @relation("Invitee") // one-to-one
+}
+
+model Challenge {
+  id   String @id @default(uuid())
+  code String @unique
+
+  inviter   User   @relation("Inviter", fields: [inviterId], references: [id])
+  inviterId String @unique
+
+  invitee   User?   @relation("Invitee", fields: [inviteeId], references: [id])
+  inviteeId String? @unique
+
+  status ChallengeStatus @default(PENDING)
+
+  customText   CustomText? @relation("CustomTextToChallenge", fields: [customTextId], references: [id])
+  customTextId Int?
+
+  createdAt DateTime  @default(now())
+  startedAt DateTime?
+  endedAt   DateTime?
+
+  inviterSession   TestSession? @relation("InviterSession", fields: [inviterSessionId], references: [id])
+  inviterSessionId Int?         @unique
+
+  inviteeSession   TestSession? @relation("InviteeSession", fields: [inviteeSessionId], references: [id])
+  inviteeSessionId Int?         @unique
 }
 
 model CustomText {
@@ -85,32 +111,6 @@ model Theme {
   userId String
 
   createdAt DateTime @default(now())
-}
-
-model Challenge {
-  id   String @id @default(uuid())
-  code String @unique
-
-  inviter   User   @relation("Inviter", fields: [inviterId], references: [id])
-  inviterId String
-
-  invitee   User?   @relation("Invitee", fields: [inviteeId], references: [id])
-  inviteeId String?
-
-  status ChallengeStatus @default(PENDING)
-
-  customText   CustomText? @relation("CustomTextToChallenge", fields: [customTextId], references: [id])
-  customTextId Int?
-
-  createdAt DateTime  @default(now())
-  startedAt DateTime?
-  endedAt   DateTime?
-
-  inviterSession   TestSession? @relation("InviterSession", fields: [inviterSessionId], references: [id])
-  inviterSessionId Int?         @unique
-
-  inviteeSession   TestSession? @relation("InviteeSession", fields: [inviteeSessionId], references: [id])
-  inviteeSessionId Int?         @unique
 }
 
 enum ModeType {
