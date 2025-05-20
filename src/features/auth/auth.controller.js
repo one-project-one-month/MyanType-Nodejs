@@ -1,6 +1,44 @@
-// import registerUser from "./auth.service.js";
-import authService from "./auth.service.js"
-import supabase  from "../../config/supabase.js";
+import authService from "./auth.service.js";
+import jwt from "jsonwebtoken";
+
+const register = async (req, res) => {
+    try {
+   
+        const {username, email, password} = req.body;
+             
+
+        const user = await authService.registerUser(username, email, password);
+        res.status(200).json({message:"User Registered", user});
+        
+    } catch(error) {
+        console.error(error.message);
+        res.status(400).json({message: "error"});
+    }
+}
+
+const login = async (req, res) => {
+    try{
+        const {email, password} = req.body;
+        const { user }= await authService.loginUser(email, password);
+        if(user.token) {
+            
+            // res.json(user);
+            return {user, token};
+        }else{
+            res.status(400).json({message: "Invalid"});
+        }
+        // res.status(200).json({message:"Login Successfully!", token ,user});
+   }catch(error){
+    console.error(error.message);
+    res.status(400).json({message:"Login error", error:error.message});
+   }
+}
+
+    const authController ={
+        register,
+        login
+    }
+    export default authController;
 
 //  const register = async (req, res)=>{
 //     try{
