@@ -1,5 +1,5 @@
 import { generateRandomWordsParagraph } from "./word.service.js";
-// import { getRandomQuote, getRandomQuotebyCategory } from "./word.service.js";
+import { getRandomQuote } from "./word.service.js";
 import { generateParagraphByTime } from "./word.service.js";
 
 // generating paragraph by word limit
@@ -33,10 +33,10 @@ export const generateByTime = (req, res) => {
 }
 
 // random quote for all button 
-// export const getQuote = (req, res) => {
-//     const quote = getRandomQuote();
-//     res.json(quote);
-// }
+export const getQuote = (req, res) => {
+    const quote = getRandomQuote();
+    res.json(quote);
+}
 
 // random quote for specific author
 // export const getQuoteByAuthor = (req, res) => {
@@ -46,11 +46,4 @@ export const generateByTime = (req, res) => {
 //     }
 //     const result = getRandomQuoteByAuthor(author);
 //     res.json(result);
-// }
-
-// random quote by category
-// export const getQuoteByCategory = (req, res) => {
-//     const category = req.query.category;
-//     const quotes = getRandomQuotebyCategory(category);
-//     res.json(quotes);
 // }

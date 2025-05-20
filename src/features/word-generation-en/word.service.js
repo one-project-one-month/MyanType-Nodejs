@@ -1,5 +1,5 @@
 import * as generateEng from 'random-words';
-// import quotes from 'quotesy';
+import quotes from 'quotesy';
 
 // generating paragraph by word limit
 export function generateRandomWordsParagraph(wordCount) {
@@ -23,20 +23,10 @@ export function generateParagraphByTime (timeInSeconds) {
 }
 
 // generating quotes
-// function getQuoteCategory(wordCount) {
-//     if (wordCount <= 20) 
-//         return 'short';
-//     if (wordCount <= 60) 
-//         return 'medium';
-//     if (wordCount <= 120)
-//         return 'long'
-//     return 'thicc';
-// }
-
 // fetching a random quote
-// export function getRandomQuote() {
-//     return quotes.random();
-// }
+export function getRandomQuote() {
+    return quotes.random();
+}
 
 // fetching quote by author name
 // export function getRandomQuoteByAuthor(author) {
