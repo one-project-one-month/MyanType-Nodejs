@@ -37,11 +37,14 @@ const loginUser = async (email, password)=>{
     if(!checkPassword) {
         throw new Error("Invalid Password");
     }
-    const token = jwt.sign({id:user.id, email: user.email}, process.env.JWT_SECRET, {expiresIn: "1h"});
+    const accessToken = jwt.sign({id:user.id, email: user.email}, process.env.JWT_ACCESS_SECRET, {expiresIn: "1h"});
+    const refreshToken = jwt.sign({id: user.id, email: user.email}, process.env.JWT_REFRESH_SECRET, {expiresIn:"7d"});
 
-    return {token, user};
+
+    return {accessToken,refreshToken, user};
     
 }
+
 
 const authService ={
     registerUser,
