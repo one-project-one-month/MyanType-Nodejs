@@ -15,11 +15,15 @@
   "type": "module",
   "dependencies": {
     "@prisma/client": "^6.8.2",
-    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
+    "google-translate-api-x": "^10.7.2",
+    "quotesy": "^1.0.10",
+    "random-words": "^2.0.1",
+    "bcrypt": "^6.0.0",
     "nanoid": "^5.1.5"
   },
   "devDependencies": {
