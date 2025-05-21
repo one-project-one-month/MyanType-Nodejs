@@ -9,13 +9,7 @@ const authRouter = Router();
 authRouter
   .post("/register", middleware, authController.register)
   .post("/login",  middleware, authController.login)
-  .get("/get", verifyAccessToken, (req, res) => {
-    res.json({ message: "You are authorized", user: req.user });
-})
   .post("/refresh-token", refreshAccessToken)
   .post("/logout", authController.logout)
-
-
-  // .post("/logout", middleware, authController.logout);
 
 export default authRouter;
