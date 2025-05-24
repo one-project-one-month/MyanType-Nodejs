@@ -8,85 +8,43 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id             String   @id @default(uuid())
+  username       String   @unique
+  email          String   @unique
+  password       String
+  profilePicture String?
+  createdAt      DateTime @default(now())
 
-  testSessions TestSession[]
-  themes       Theme[]
-  customTexts  CustomText[]
-
-  challengeCreated Challenge? @relation("Inviter") // one-to-one
-  challengeJoined  Challenge? @relation("Invitee") // one-to-one
+  testResults TestResult[]
+  themes      Theme[]
+  stats       UserStats?
 }
 
-model Challenge {
-  id   String @id @default(uuid())
-  code String @unique
+model UserStats {
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 
-  inviter   User   @relation("Inviter", fields: [inviterId], references: [id])
-  inviterId String @unique
+  testsCompleted  Int @default(0)
+  totalTypingTime Int @default(0) // in seconds
 
-  invitee   User?   @relation("Invitee", fields: [inviteeId], references: [id])
-  inviteeId String? @unique
+  highest15sWpm Float @default(0)
+  accuracy15s   Float @default(0)
 
-  status ChallengeStatus @default(PENDING)
+  highest60sWpm Float @default(0)
+  accuracy60s   Float @default(0)
 
-  customText   CustomText? @relation("CustomTextToChallenge", fields: [customTextId], references: [id])
-  customTextId Int?
-
-  createdAt DateTime  @default(now())
-  startedAt DateTime?
-  endedAt   DateTime?
-
-  inviterSession   TestSession? @relation("InviterSession", fields: [inviterSessionId], references: [id])
-  inviterSessionId Int?         @unique
-
-  inviteeSession   TestSession? @relation("InviteeSession", fields: [inviteeSessionId], references: [id])
-  inviteeSessionId Int?         @unique
-}
-
-model CustomText {
-  id      Int    @id @default(autoincrement())
-  content String
-
-  createdBy   User   @relation(fields: [createdById], references: [id])
-  createdById String
-
-  testSessions TestSession[]
-  createdAt    DateTime      @default(now())
-  challenges   Challenge[]   @relation("CustomTextToChallenge")
-}
-
-model TestSession {
-  id Int @id @default(autoincrement())
-
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String?
-
-  customText   CustomText? @relation(fields: [customTextId], references: [id])
-  customTextId Int?
-
-  mode ModeType
-
-  timeLimit Int?
-  wordLimit Int?
-
-  startedAt DateTime @default(now())
-
-  result TestResult?
-
-  challengeAsInviter Challenge? @relation("InviterSession")
-  challengeAsInvitee Challenge? @relation("InviteeSession")
+  updatedAt DateTime @updatedAt
 }
 
 model TestResult {
-  id Int @id @default(autoincrement())
+  id     Int     @id @default(autoincrement())
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
 
-  testSession   TestSession @relation(fields: [testSessionId], references: [id])
-  testSessionId Int         @unique
+  mode      ModeType
+  timeLimit Int?
+  wordLimit Int?
 
   wpm             Float
   raw             Int
@@ -98,18 +56,16 @@ model TestResult {
   miss            Int
   consistency     Int
 
-  timeTaken Int
+  timeTaken Int // Actual duration typed in seconds
+  createdAt DateTime @default(now())
 }
 
 model Theme {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  settings Json
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
+  id        Int      @id @default(autoincrement())
+  name      String
+  settings  Json
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
   createdAt DateTime @default(now())
 }
 
@@ -118,11 +74,4 @@ enum ModeType {
   WORDS
   QUOTE
   CUSTOM
-}
-
-enum ChallengeStatus {
-  PENDING
-  ACCEPTED
-  COMPLETED
-  CANCELLED
 }
