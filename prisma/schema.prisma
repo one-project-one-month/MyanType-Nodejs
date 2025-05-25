@@ -27,11 +27,11 @@ model UserStats {
 
   testsCompleted Int @default(0)
 
-  highest15sWpm Float @default(0)
-  accuracy15s   Float @default(0)
+  highest15sWpm Int @default(0)
+  accuracy15s   Int @default(0)
 
-  highest60sWpm Float @default(0)
-  accuracy60s   Float @default(0)
+  highest60sWpm Int @default(0)
+  accuracy60s   Int @default(0)
 
   updatedAt DateTime @updatedAt
 }
@@ -46,9 +46,9 @@ model TestResult {
   timeLimit Int?
   wordLimit Int?
 
-  wpm             Float
+  wpm             Int
   raw             Int
-  accuracy        Float
+  accuracy        Int
   charactersTyped Int
   correct         Int
   incorrect       Int
@@ -77,8 +77,8 @@ enum ModeType {
 }
 
 enum LanguageType {
-  Myanmar
-  English
+  mm
+  en
 }
 
 // enum ChallengeStatus {

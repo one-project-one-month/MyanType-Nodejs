@@ -1,29 +1,26 @@
- import leaderboard from "./leaderboard.service.js"
- 
- 
- const getLeaderbroad15s= async (req,res) => {
+import { getLeaderboard } from "./leaderboard.service.js";
+import { LanguageType } from "@prisma/client";
+import { StatusCode } from "../../utils/StatusCode.js";
 
-     const results = await leaderboard.Leaderboard15s();
-     res.json(results)
+export const leaderboardController = async (req, res) => {
+  const { lang, time } = req.params;
 
- }
- 
- const getLeaderbroad60s = async (req,res) => {
-     const results = await leaderboard.Leaderboard60s();
-     res.json(results)
- }
-const getUserBest15s = async (req,res) => {
-     const results = await leaderboard.UserBest15s(1);
-     res.json(results)
-}
-const getUserBest60s = async (req,res) => {
-     const results = await leaderboard.UserBest60s();
-     res.json(results);
-}
-const getLeaderboard = {
-     getLeaderbroad15s,
-     getLeaderbroad60s,
-     getUserBest15s,
-     getUserBest60s
-}
-export default getLeaderboard;
+  const validLangs = [LanguageType.en, LanguageType.mm];
+  const validTimes = ["15", "60"];
+
+  if (!validLangs.includes(lang.toLowerCase()) || !validTimes.includes(time)) {
+    return res
+      .status(StatusCode.NotFound)
+      .json({ error: "Leaderboard not found" });
+  }
+
+  try {
+    const results = await getLeaderboard(lang, time);
+    return res.status(StatusCode.OK).json({ data: results });
+  } catch (error) {
+    console.error("Failed to fetch leaderboard:", error);
+    return res
+      .status(StatusCode.InternalServerError)
+      .json({ error: "Internal server error" });
+  }
+};

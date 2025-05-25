@@ -1,74 +1,49 @@
- import prisma from "../../config/prisma.js";
- 
+import prisma from "../../config/prisma.js";
 
-const Leaderboard15s = async () => {
-  const results = await prisma.testResult.findMany({
-    where: {
-      mode: "TIME",
-      timeLimit: 15,
-      userId: { not: null }
-    },
-    orderBy: { wpm: 'desc' },
-    select: {
-      wpm: true,
-      accuracy: true,
-      user: { select: { username: true } },
-      createdAt: true
-    }
-  });
+export const getLeaderboard = async (language, timeLimit) => {
+  try {
+    const allResults = await prisma.testResult.findMany({
+      where: {
+        mode: "TIME",
+        language,
+        timeLimit: parseInt(timeLimit),
+      },
+      orderBy: {
+        wpm: "desc",
+      },
+      select: {
+        wpm: true,
+        accuracy: true,
+        raw: true,
+        consistency: true,
+        createdAt: true,
+        userId: true,
+        user: {
+          select: {
+            username: true,
+            profilePicture: true,
+          },
+        },
+      },
+    });
 
-  return results;
-};
-const Leaderboard60s = async () => {
-  return prisma.testResult.findMany({
-    where: {
-      mode: "TIME",
-      timeLimit: 60,
-      userId: { not: null }
-    },
-    orderBy: { wpm: 'desc' },
-    select: {
-      wpm: true,
-      accuracy: true,
-      user: { select: { username: true } },
-      createdAt: true
+    // Deduplicate by userId, keeping only the first (highest WPM)
+    const uniqueResultsMap = new Map();
+    for (const result of allResults) {
+      if (!uniqueResultsMap.has(result.userId)) {
+        uniqueResultsMap.set(result.userId, result);
+      }
     }
-  })
+
+    // Convert the map values to an array
+    const uniqueResults = Array.from(uniqueResultsMap.values());
+
+    return uniqueResults;
+  } catch (error) {
+    console.error(
+      `Failed to fetch ${language} ${timeLimit}s leaderboard:`,
+      error
+    );
+    throw new Error("Could not retrieve leaderboard data.");
+  }
 };
- const UserBest15s = async (userId) => {
-  return prisma.testResult.findFirst({
-    where: {
-      userId,
-      mode: "TIME",
-      timeLimit: 15
-    },
-    orderBy: { wpm: 'desc' },
-    select: {
-      wpm: true,
-      accuracy: true,
-      createdAt: true
-    }
-  });
-};
- const UserBest60s = async (userId) => {
-  return prisma.testResult.findFirst({
-    where: {
-      userId,
-      mode: "TIME",
-      timeLimit: 60
-    },
-    orderBy: { wpm: 'desc' },
-    select: {
-      wpm: true,
-      accuracy: true,
-      createdAt: true
-    }
-  });
-};
-const leaderboard = {
-    Leaderboard15s,
-    Leaderboard60s,
-    UserBest15s,
-    UserBest60s
-}
-export default leaderboard;

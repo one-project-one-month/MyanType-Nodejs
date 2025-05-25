@@ -1,129 +1,89 @@
 import prisma from "../src/config/prisma.js";
-import { hash } from "bcrypt";
+
+import { faker } from "@faker-js/faker";
 
 async function main() {
-  const usersData = [
-    {
-      username: "alice123",
-      email: "alice@example.com",
-      password: "password123",
-      profilePicture: null,
-    },
-    {
-      username: "bob456",
-      email: "bob@example.com",
-      password: "password123",
-      profilePicture: null,
-    },
-    {
-      username: "charlie789",
-      email: "charlie@example.com",
-      password: "password123",
-      profilePicture: null,
-    },
-    {
-      username: "dana321",
-      email: "dana@example.com",
-      password: "password123",
-      profilePicture: null,
-    },
-    {
-      username: "eve654",
-      email: "eve@example.com",
-      password: "password123",
-      profilePicture: null,
-    },
-  ];
+  await prisma.testResult.deleteMany();
+  await prisma.theme.deleteMany();
+  await prisma.userStats.deleteMany();
+  await prisma.user.deleteMany();
 
-  for (const userData of usersData) {
-    const hashedPassword = await hash(userData.password, 10);
+  for (let i = 0; i < 15; i++) {
     const user = await prisma.user.create({
       data: {
-        ...userData,
-        password: hashedPassword,
-        stats: {
-          create: {
-            testsCompleted: 15,
-            totalTypingTime: 1200,
-            highest15sWpm: 95,
-            accuracy15s: 97.5,
-            highest60sWpm: 105,
-            accuracy60s: 96.1,
-          },
-        },
-        themes: {
-          create: {
-            name: "Ocean Blue",
-            settings: {
-              background: "#1e3a8a",
-              text: "#f1f5f9",
-            },
-          },
-        },
-        testResults: {
-          create: [
-            {
-              mode: "TIME",
-              language: "English",
-              timeLimit: 15,
-              wordLimit: null,
-              wpm: 93,
-              raw: 310,
-              accuracy: 96.3,
-              charactersTyped: 305,
-              correct: 290,
-              incorrect: 10,
-              extra: 3,
-              miss: 2,
-              consistency: 85,
-              timeTaken: 15,
-            },
-            {
-              mode: "WORDS",
-              language: "Myanmar",
-              timeLimit: null,
-              wordLimit: 50,
-              wpm: 88,
-              raw: 270,
-              accuracy: 94.5,
-              charactersTyped: 265,
-              correct: 250,
-              incorrect: 12,
-              extra: 1,
-              miss: 2,
-              consistency: 80,
-              timeTaken: 30,
-            },
-            {
-              mode: "QUOTE",
-              language: "English",
-              timeLimit: null,
-              wordLimit: null,
-              wpm: 100,
-              raw: 330,
-              accuracy: 98.0,
-              charactersTyped: 320,
-              correct: 310,
-              incorrect: 5,
-              extra: 2,
-              miss: 1,
-              consistency: 90,
-              timeTaken: 20,
-            },
-          ],
-        },
+        username: faker.internet.username(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        profilePicture: faker.image.avatar(),
+        createdAt: faker.date.past(),
       },
     });
 
-    console.log(`Created user: ${user.username}`);
+    // Create 10–30 test results for each user
+    const testResultsCount = faker.number.int({ min: 10, max: 30 });
+
+    const testResults = await Promise.all(
+      Array.from({ length: testResultsCount }).map(() =>
+        prisma.testResult.create({
+          data: {
+            userId: user.id,
+            mode: faker.helpers.arrayElement(["TIME", "WORDS", "QUOTE"]),
+            language: faker.helpers.arrayElement(["en", "mm"]),
+            timeLimit: faker.helpers.arrayElement([15, 60]),
+            wordLimit: faker.number.int({ min: 10, max: 100 }),
+
+            wpm: faker.number.int({ min: 40, max: 150 }),
+            raw: faker.number.int({ min: 100, max: 300 }),
+            accuracy: faker.number.int({ min: 85, max: 100 }),
+            charactersTyped: faker.number.int({ min: 500, max: 1500 }),
+            correct: faker.number.int({ min: 400, max: 1400 }),
+            incorrect: faker.number.int({ min: 10, max: 50 }),
+            extra: faker.number.int({ min: 5, max: 20 }),
+            miss: faker.number.int({ min: 5, max: 20 }),
+            consistency: faker.number.int({ min: 50, max: 100 }),
+            timeTaken: faker.number.int({ min: 10, max: 60 }),
+            createdAt: faker.date.recent(),
+          },
+        })
+      )
+    );
+
+    const stats = {
+      testsCompleted: testResults.length,
+      highest15sWpm: faker.number.int({ min: 80, max: 160 }),
+      accuracy15s: faker.number.int({ min: 85, max: 100 }),
+      highest60sWpm: faker.number.int({ min: 80, max: 160 }),
+      accuracy60s: faker.number.int({ min: 85, max: 100 }),
+    };
+
+    await prisma.userStats.create({
+      data: {
+        userId: user.id,
+        ...stats,
+      },
+    });
+
+    // Create a random theme
+    await prisma.theme.create({
+      data: {
+        userId: user.id,
+        name: faker.color.human(),
+        settings: {
+          background: faker.color.rgb(),
+          text: faker.color.rgb(),
+          accent: faker.color.rgb(),
+        },
+      },
+    });
   }
 }
 
 main()
-  .catch((e) => {
-    console.error("Error seeding database:", e);
-    process.exit(1);
+  .then(() => {
+    console.log("✅ Seed complete!");
+    return prisma.$disconnect();
   })
-  .finally(async () => {
-    await prisma.$disconnect();
+  .catch((e) => {
+    console.error("❌ Seed failed:", e);
+    return prisma.$disconnect();
   });

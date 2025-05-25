@@ -1,9 +1,8 @@
- import { Router } from "express";
- import  getLeaderboard  from "./leaderboard.controller.js";
- 
- const leaderboardRouter= Router();
+import { Router } from "express";
+import { leaderboardController } from "./leaderboard.controller.js";
 
- leaderboardRouter.get('/leaderboard',getLeaderboard.getLeaderbroad15s);
- leaderboardRouter.get('/UserBest15s',getLeaderboard.getUserBest15s);
+const leaderboardRouter = Router();
 
- export default leaderboardRouter;
+leaderboardRouter.get("/:lang/:time", leaderboardController);
+
+export default leaderboardRouter;
