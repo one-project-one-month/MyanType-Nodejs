@@ -1,127 +1,89 @@
 import prisma from "../src/config/prisma.js";
-import { hash } from "bcrypt";
-import { customAlphabet } from "nanoid";
 
-const generateChallengeCode = customAlphabet(
-  "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  6
-);
+import { faker } from "@faker-js/faker";
 
-const main = async () => {
-  const userPassword = await hash("password", 10);
+async function main() {
+  await prisma.testResult.deleteMany();
+  await prisma.theme.deleteMany();
+  await prisma.userStats.deleteMany();
+  await prisma.user.deleteMany();
 
-  // Create first user
-  const user1 = await prisma.user.create({
-    data: {
-      username: "Test User 1",
-      email: "test1@gmail.com",
-      password: userPassword,
-    },
-  });
-  console.log("User 1 created");
-
-  // Create second user
-  const user2 = await prisma.user.create({
-    data: {
-      username: "Test User 2",
-      email: "test2@gmail.com",
-      password: userPassword,
-    },
-  });
-  console.log("User 2 created");
-
-  // Create custom texts for user1
-  const customText1 = await prisma.customText.create({
-    data: {
-      content: "This is a custom typing text.",
-      createdById: user1.id,
-    },
-  });
-
-  const customText2 = await prisma.customText.create({
-    data: {
-      content: "Another sample text for typing practice.",
-      createdById: user1.id,
-    },
-  });
-
-  console.log("Custom texts created");
-
-  // Create theme for user1
-  const theme = await prisma.theme.create({
-    data: {
-      name: "Dark Theme",
-      settings: {
-        background: "#1e1e1e",
-        textColor: "#ffffff",
-        accentColor: "#ff4081",
+  for (let i = 0; i < 15; i++) {
+    const user = await prisma.user.create({
+      data: {
+        username: faker.internet.username(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        profilePicture: faker.image.avatar(),
+        createdAt: faker.date.past(),
       },
-      userId: user1.id,
-    },
-  });
+    });
 
-  // Create test sessions
-  const user1Session = await prisma.testSession.create({
-    data: {
-      userId: user1.id,
-      mode: "WORDS",
-      wordLimit: 50,
-      customTextId: customText1.id,
-    },
-  });
+    // Create 10–30 test results for each user
+    const testResultsCount = faker.number.int({ min: 10, max: 30 });
 
-  const user2Session = await prisma.testSession.create({
-    data: {
-      userId: user2.id,
-      mode: "TIME",
-      timeLimit: 60,
-      customTextId: customText2.id,
-    },
-  });
+    const testResults = await Promise.all(
+      Array.from({ length: testResultsCount }).map(() =>
+        prisma.testResult.create({
+          data: {
+            userId: user.id,
+            mode: faker.helpers.arrayElement(["TIME", "WORDS", "QUOTE"]),
+            language: faker.helpers.arrayElement(["en", "mm"]),
+            timeLimit: faker.helpers.arrayElement([15, 60]),
+            wordLimit: faker.number.int({ min: 10, max: 100 }),
 
-  console.log("Test sessions created");
+            wpm: faker.number.int({ min: 40, max: 150 }),
+            raw: faker.number.int({ min: 100, max: 300 }),
+            accuracy: faker.number.int({ min: 85, max: 100 }),
+            charactersTyped: faker.number.int({ min: 500, max: 1500 }),
+            correct: faker.number.int({ min: 400, max: 1400 }),
+            incorrect: faker.number.int({ min: 10, max: 50 }),
+            extra: faker.number.int({ min: 5, max: 20 }),
+            miss: faker.number.int({ min: 5, max: 20 }),
+            consistency: faker.number.int({ min: 50, max: 100 }),
+            timeTaken: faker.number.int({ min: 10, max: 60 }),
+            createdAt: faker.date.recent(),
+          },
+        })
+      )
+    );
 
-  // Create test result for user1 session
-  await prisma.testResult.create({
-    data: {
-      testSessionId: user1Session.id,
-      wpm: 72.5,
-      raw: 90,
-      accuracy: 96.3,
-      charactersTyped: 250,
-      correct: 240,
-      incorrect: 10,
-      extra: 3,
-      miss: 5,
-      consistency: 85,
-      timeTaken: 60,
-    },
-  });
+    const stats = {
+      testsCompleted: testResults.length,
+      highest15sWpm: faker.number.int({ min: 80, max: 160 }),
+      accuracy15s: faker.number.int({ min: 85, max: 100 }),
+      highest60sWpm: faker.number.int({ min: 80, max: 160 }),
+      accuracy60s: faker.number.int({ min: 85, max: 100 }),
+    };
 
-  console.log("Test result created");
+    await prisma.userStats.create({
+      data: {
+        userId: user.id,
+        ...stats,
+      },
+    });
 
-  // Create challenge invited by user1, invited user2
-  const code = generateChallengeCode();
-  await prisma.challenge.create({
-    data: {
-      code: code,
-      inviterId: user1.id,
-      inviteeId: user2.id, // assign invitee (user2)
-      status: "PENDING",
-      customTextId: customText1.id,
-      inviterSessionId: user1Session.id,
-      inviteeSessionId: user2Session.id,
-    },
-  });
-
-  console.log("Challenge created");
-};
+    // Create a random theme
+    await prisma.theme.create({
+      data: {
+        userId: user.id,
+        name: faker.color.human(),
+        settings: {
+          background: faker.color.rgb(),
+          text: faker.color.rgb(),
+          accent: faker.color.rgb(),
+        },
+      },
+    });
+  }
+}
 
 main()
-  .catch((e) => {
-    console.error("Error during seeding:", e);
-    process.exit(1);
+  .then(() => {
+    console.log("✅ Seed complete!");
+    return prisma.$disconnect();
   })
-  .finally(() => {
-    prisma.$disconnect();
+  .catch((e) => {
+    console.error("❌ Seed failed:", e);
+    return prisma.$disconnect();
   });

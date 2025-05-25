@@ -8,6 +8,6 @@ authRouter
   .post("/register", authController.register)
   .post("/login", authController.login)
   .post("/refresh-token", refreshAccessToken)
-  .post("/logout", authController.logout)
+  .post("/logout", authController.logout);
 
 export default authRouter;

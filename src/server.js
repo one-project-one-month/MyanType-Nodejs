@@ -4,7 +4,6 @@ import router from "./router.js";
 import { ENV } from "./config/ENV.js";
 import cookieParser from "cookie-parser";
 
-
 const app = express();
 
 app.use(cookieParser());

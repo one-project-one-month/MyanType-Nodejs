@@ -27,11 +27,11 @@ model UserStats {
 
   testsCompleted Int @default(0)
 
-  highest15sWpm Float @default(0)
-  accuracy15s   Float @default(0)
+  highest15sWpm Int @default(0)
+  accuracy15s   Int @default(0)
 
-  highest60sWpm Float @default(0)
-  accuracy60s   Float @default(0)
+  highest60sWpm Int @default(0)
+  accuracy60s   Int @default(0)
 
   updatedAt DateTime @updatedAt
 }
@@ -46,9 +46,9 @@ model TestResult {
   timeLimit Int?
   wordLimit Int?
 
-  wpm             Float
+  wpm             Int
   raw             Int
-  accuracy        Float
+  accuracy        Int
   charactersTyped Int
   correct         Int
   incorrect       Int
@@ -80,3 +80,33 @@ enum LanguageType {
   mm
   en
 }
+
+// enum ChallengeStatus {
+//   PENDING
+//   ACCEPTED
+//   COMPLETED
+//   CANCELLED
+// }
+
+// model Challenge {
+//   id   String @id @default(uuid())
+//   code String @unique
+
+//   inviter   User   @relation("Inviter", fields: [inviterId], references: [id])
+//   inviterId String @unique
+
+//   invitee   User?   @relation("Invitee", fields: [inviteeId], references: [id])
+//   inviteeId String? @unique
+
+//   status ChallengeStatus @default(PENDING)
+
+//   createdAt DateTime  @default(now())
+//   startedAt DateTime?
+//   endedAt   DateTime?
+
+//   inviterSession   TestSession? @relation("InviterSession", fields: [inviterSessionId], references: [id])
+//   inviterSessionId Int?         @unique
+
+//   inviteeSession   TestSession? @relation("InviteeSession", fields: [inviteeSessionId], references: [id])
+//   inviteeSessionId Int?         @unique
+// }

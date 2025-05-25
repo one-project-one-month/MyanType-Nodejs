@@ -2,10 +2,8 @@ import prisma from "../src/config/prisma.js";
 
 async function main() {
   await prisma.testResult.deleteMany();
-  await prisma.testSession.deleteMany();
-  await prisma.challenge.deleteMany();
-  await prisma.customText.deleteMany();
   await prisma.theme.deleteMany();
+  await prisma.userStats.deleteMany();
   await prisma.user.deleteMany();
 }
 
