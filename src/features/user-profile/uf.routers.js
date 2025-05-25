@@ -1,12 +1,11 @@
 import { Router } from "express";
-import middleware from "../../middlewares/index.js";
 import verifyAccessToken from "../../middlewares/jwtVerify.js";
 import userProfile from "./uf.controller.js";
-import refreshAccessToken from "../../middlewares/refreshVerify.js";
+// import refreshAccessToken from "../../middlewares/refreshVerify.js";
 
 const userProfileRouter = Router();
 
 userProfileRouter
-    .get("/userProfile", middleware, verifyAccessToken, userProfile )
+    .get("/userProfile", verifyAccessToken, userProfile )
 
     export default userProfileRouter;

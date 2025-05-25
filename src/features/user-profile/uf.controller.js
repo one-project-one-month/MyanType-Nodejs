@@ -2,9 +2,14 @@ import getUserProfile from "./uf.service.js";
 
 const userProfile = async (req, res) =>{
     try{
-        const email = req.body.email;
-        const data = await getUserProfile(email);
-        res.status(200).json({message: "Success", data});
+        const id = req.user.id;
+        const user = await getUserProfile(id);
+        // const timeLimits= user.testResults.map(result => result.timeLimit);
+        // const wpms = user.testResults.map(result=> result.wpm);
+
+        // res.status(200).json({message: "Success", timeLimits, wpms});
+        const data = user.testResults.map(result=>result);
+        res.status(200).json({message:"success", data});
     }catch(error){
         console.error(error.message);
         res.status(400).json({message: "error"});

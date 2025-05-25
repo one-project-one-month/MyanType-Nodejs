@@ -25,8 +25,7 @@ model UserStats {
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
 
-  testsCompleted  Int @default(0)
-  totalTypingTime Int @default(0) // in seconds
+  testsCompleted Int @default(0)
 
   highest15sWpm Float @default(0)
   accuracy15s   Float @default(0)
@@ -43,6 +42,7 @@ model TestResult {
   userId String?
 
   mode      ModeType
+  language  LanguageType
   timeLimit Int?
   wordLimit Int?
 
@@ -74,4 +74,9 @@ enum ModeType {
   WORDS
   QUOTE
   CUSTOM
+}
+
+enum LanguageType {
+  mm
+  en
 }

@@ -1,12 +1,13 @@
 
 import prisma from "../../config/prisma.js";
 
-const getUserProfile = async (email)=>{
-     if (!email) throw new Error("User ID is required");
+const getUserProfile = async (id) =>{
+    //  if (!email) throw new Error("User email is required");
+    // const userId = req.user.id;
     const user = await prisma.user.findUnique({
-        where: {email},
+        where: {id},
         select: {
-            username: true,
+            username: true, 
             profilePicture: true,
             createdAt: true,
             stats: true,

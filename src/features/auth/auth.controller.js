@@ -1,6 +1,4 @@
 import authService from "./auth.service.js";
-import jwt from "jsonwebtoken";
-import cookieParser from "cookie-parser";
 const register = async (req, res) => {
     try {
    
@@ -32,15 +30,13 @@ const login = async (req, res) => {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
 
             });
-            
-            // res.json(user);
+
             res.status(200).json({message:"Login Successfully!",user, accessToken, refreshToken});
 
             
         }else{
             res.status(400).json({message: "Invalid"});
         }
-        // res.status(200).json({message:"Login Successfully!", token ,user});
    }catch(error){
     console.error(error.message);
     res.status(400).json({message:"Login error", error:error.message});
