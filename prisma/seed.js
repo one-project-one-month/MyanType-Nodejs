@@ -1,127 +1,129 @@
 import prisma from "../src/config/prisma.js";
 import { hash } from "bcrypt";
-import { customAlphabet } from "nanoid";
 
-const generateChallengeCode = customAlphabet(
-  "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  6
-);
-
-const main = async () => {
-  const userPassword = await hash("password", 10);
-
-  // Create first user
-  const user1 = await prisma.user.create({
-    data: {
-      username: "Test User 1",
-      email: "test1@gmail.com",
-      password: userPassword,
+async function main() {
+  const usersData = [
+    {
+      username: "alice123",
+      email: "alice@example.com",
+      password: "password123",
+      profilePicture: null,
     },
-  });
-  console.log("User 1 created");
-
-  // Create second user
-  const user2 = await prisma.user.create({
-    data: {
-      username: "Test User 2",
-      email: "test2@gmail.com",
-      password: userPassword,
+    {
+      username: "bob456",
+      email: "bob@example.com",
+      password: "password123",
+      profilePicture: null,
     },
-  });
-  console.log("User 2 created");
-
-  // Create custom texts for user1
-  const customText1 = await prisma.customText.create({
-    data: {
-      content: "This is a custom typing text.",
-      createdById: user1.id,
+    {
+      username: "charlie789",
+      email: "charlie@example.com",
+      password: "password123",
+      profilePicture: null,
     },
-  });
-
-  const customText2 = await prisma.customText.create({
-    data: {
-      content: "Another sample text for typing practice.",
-      createdById: user1.id,
+    {
+      username: "dana321",
+      email: "dana@example.com",
+      password: "password123",
+      profilePicture: null,
     },
-  });
+    {
+      username: "eve654",
+      email: "eve@example.com",
+      password: "password123",
+      profilePicture: null,
+    },
+  ];
 
-  console.log("Custom texts created");
-
-  // Create theme for user1
-  const theme = await prisma.theme.create({
-    data: {
-      name: "Dark Theme",
-      settings: {
-        background: "#1e1e1e",
-        textColor: "#ffffff",
-        accentColor: "#ff4081",
+  for (const userData of usersData) {
+    const hashedPassword = await hash(userData.password, 10);
+    const user = await prisma.user.create({
+      data: {
+        ...userData,
+        password: hashedPassword,
+        stats: {
+          create: {
+            testsCompleted: 15,
+            totalTypingTime: 1200,
+            highest15sWpm: 95,
+            accuracy15s: 97.5,
+            highest60sWpm: 105,
+            accuracy60s: 96.1,
+          },
+        },
+        themes: {
+          create: {
+            name: "Ocean Blue",
+            settings: {
+              background: "#1e3a8a",
+              text: "#f1f5f9",
+            },
+          },
+        },
+        testResults: {
+          create: [
+            {
+              mode: "TIME",
+              language: "English",
+              timeLimit: 15,
+              wordLimit: null,
+              wpm: 93,
+              raw: 310,
+              accuracy: 96.3,
+              charactersTyped: 305,
+              correct: 290,
+              incorrect: 10,
+              extra: 3,
+              miss: 2,
+              consistency: 85,
+              timeTaken: 15,
+            },
+            {
+              mode: "WORDS",
+              language: "Myanmar",
+              timeLimit: null,
+              wordLimit: 50,
+              wpm: 88,
+              raw: 270,
+              accuracy: 94.5,
+              charactersTyped: 265,
+              correct: 250,
+              incorrect: 12,
+              extra: 1,
+              miss: 2,
+              consistency: 80,
+              timeTaken: 30,
+            },
+            {
+              mode: "QUOTE",
+              language: "English",
+              timeLimit: null,
+              wordLimit: null,
+              wpm: 100,
+              raw: 330,
+              accuracy: 98.0,
+              charactersTyped: 320,
+              correct: 310,
+              incorrect: 5,
+              extra: 2,
+              miss: 1,
+              consistency: 90,
+              timeTaken: 20,
+            },
+          ],
+        },
       },
-      userId: user1.id,
-    },
-  });
+    });
 
-  // Create test sessions
-  const user1Session = await prisma.testSession.create({
-    data: {
-      userId: user1.id,
-      mode: "WORDS",
-      wordLimit: 50,
-      customTextId: customText1.id,
-    },
-  });
-
-  const user2Session = await prisma.testSession.create({
-    data: {
-      userId: user2.id,
-      mode: "TIME",
-      timeLimit: 60,
-      customTextId: customText2.id,
-    },
-  });
-
-  console.log("Test sessions created");
-
-  // Create test result for user1 session
-  await prisma.testResult.create({
-    data: {
-      testSessionId: user1Session.id,
-      wpm: 72.5,
-      raw: 90,
-      accuracy: 96.3,
-      charactersTyped: 250,
-      correct: 240,
-      incorrect: 10,
-      extra: 3,
-      miss: 5,
-      consistency: 85,
-      timeTaken: 60,
-    },
-  });
-
-  console.log("Test result created");
-
-  // Create challenge invited by user1, invited user2
-  const code = generateChallengeCode();
-  await prisma.challenge.create({
-    data: {
-      code: code,
-      inviterId: user1.id,
-      inviteeId: user2.id, // assign invitee (user2)
-      status: "PENDING",
-      customTextId: customText1.id,
-      inviterSessionId: user1Session.id,
-      inviteeSessionId: user2Session.id,
-    },
-  });
-
-  console.log("Challenge created");
-};
+    console.log(`Created user: ${user.username}`);
+  }
+}
 
 main()
   .catch((e) => {
-    console.error("Error during seeding:", e);
+    console.error("Error seeding database:", e);
     process.exit(1);
   })
-  .finally(() => {
-    prisma.$disconnect();
+  .finally(async () => {
+    await prisma.$disconnect();
   });

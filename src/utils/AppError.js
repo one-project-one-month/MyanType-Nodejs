@@ -1,4 +1,4 @@
-const { StatusCode } = require("../Status");
+import { StatusCode } from "./StatusCode.js";
 
 // Define types of known errors
 export const errorKinds = {
