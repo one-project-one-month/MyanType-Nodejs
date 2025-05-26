@@ -1,4 +1,4 @@
-import getUserProfile from "./uf.service.js";
+import getUserProfile from "./userProfile.service.js";
 
 const userProfile = async (req, res) =>{
     try{
