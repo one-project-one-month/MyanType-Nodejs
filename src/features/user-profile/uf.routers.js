@@ -6,6 +6,8 @@ import userProfile from "./uf.controller.js";
 const userProfileRouter = Router();
 
 userProfileRouter
-    .get("/userProfile", verifyAccessToken, userProfile )
+    .get("/userProfile", verifyAccessToken, userProfile, (req, res)=>{
+        res.redirect('localhost:3000/api/v1/user-profile/userProfile');
+    })
 
     export default userProfileRouter;

@@ -1,6 +1,7 @@
 import prisma from "../src/config/prisma.js";
 
 import { faker } from "@faker-js/faker";
+import { hash } from "bcrypt";
 
 async function main() {
   await prisma.testResult.deleteMany();
@@ -9,11 +10,15 @@ async function main() {
   await prisma.user.deleteMany();
 
   for (let i = 0; i < 15; i++) {
+     const password = "password";
+     const userPassword = await hash(password, 10);
+    
     const user = await prisma.user.create({
       data: {
         username: faker.internet.username(),
         email: faker.internet.email(),
-        password: faker.internet.password(),
+        // password: faker.internet.password(),
+        password:userPassword,
         profilePicture: faker.image.avatar(),
         createdAt: faker.date.past(),
       },

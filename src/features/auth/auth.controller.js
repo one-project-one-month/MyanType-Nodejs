@@ -1,14 +1,15 @@
+import { fa } from "@faker-js/faker";
 import authService from "./auth.service.js";
 const register = async (req, res) => {
     try {
    
         const {username, email, password} = req.body;
         const user = await authService.registerUser(username, email, password);
-        res.status(201).json({message:"User Registered", user});
+        res.status(201).json({success:true,message:"User Registered", user});
         
     } catch(error) {
         console.error(error.message);
-        res.status(400).json({message: "error"});
+        res.status(400).json({success:false,message: "error"});
     }
 }
 
@@ -31,15 +32,15 @@ const login = async (req, res) => {
 
             });
 
-            res.status(200).json({message:"Login Successfully!",user, accessToken, refreshToken});
+            res.status(200).json({success:true,message:"Login Successfully!",user, accessToken, refreshToken});
 
             
         }else{
-            res.status(400).json({message: "Invalid"});
+            res.status(400).json({success:false ,message: "Invalid"});
         }
    }catch(error){
     console.error(error.message);
-    res.status(400).json({message:"Login error", error:error.message});
+    res.status(400).json({success: false,message:"Login error", error:error.message});
    }
 }
 
@@ -48,10 +49,10 @@ const logout = async (req, res) =>{
     try{
         res.clearCookie("accessToken");
         res.clearCookie("refreshToken");
-        return res.status(200).json({message: "Logout successfully"});
+        return res.status(200).json({ success: true,message: "Logout successfully"});
 
     } catch(error){
-        return res.status(400).json({message: error.message})
+        return res.status(400).json({success: false,message: error.message})
     }
     }
 

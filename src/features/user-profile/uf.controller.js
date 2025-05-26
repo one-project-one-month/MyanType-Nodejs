@@ -9,7 +9,9 @@ const userProfile = async (req, res) =>{
 
         // res.status(200).json({message: "Success", timeLimits, wpms});
         const data = user.testResults.map(result=>result);
-        res.status(200).json({message:"success", data});
+        const stats = user.stats;
+        // res.redirect('localhost:3000/api/v1/user-profile/userProfile');
+        res.status(200).json({message:"success", data, stats});
     }catch(error){
         console.error(error.message);
         res.status(400).json({message: "error"});
