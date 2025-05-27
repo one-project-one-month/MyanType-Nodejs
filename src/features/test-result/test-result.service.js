@@ -41,6 +41,46 @@ export const createTestResult = async (data, userId, mode) => {
         timeTaken: data.timeTaken,
       },
     });
+    const testsCompleted = await prisma.testResult.count({
+        where: {userId}
+    });
+    const best15s = await prisma.testResult.findFirst({
+        where:{
+            userId,
+            timeLimit:15,
+        },
+        orderBy:{
+            wpm:'desc',
+        },
+    });
+
+    const best60s = await prisma.testResult.findFirst({
+        where:{
+            userId,
+            timeLimit:60,
+        },
+        orderBy:{
+            wpm:'desc',
+        },
+    });
+    await prisma.UserStats.upsert({
+    where: { userId },
+    update: {
+      testsCompleted,
+      highest15sWpm: best15s?.wpm ?? 0,
+      accuracy15s: best15s?.accuracy ?? 0,
+      highest60sWpm: best60s?.wpm ?? 0,
+      accuracy60s: best60s?.accuracy ?? 0,
+    },
+    create: {
+      userId,
+      testsCompleted,
+      highest15sWpm: best15s?.wpm ?? 0,
+      accuracy15s: best15s?.accuracy ?? 0,
+      highest60sWpm: best60s?.wpm ?? 0,
+      accuracy60s: best60s?.accuracy ?? 0,
+    },
+  });
 
     return testResult;
   } catch (error) {
