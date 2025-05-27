@@ -1,7 +1,6 @@
 import { createTestResult } from "./test-result.service.js";
 import { StatusCode } from "../../utils/StatusCode.js";
-import pkg from "@prisma/client";
-const { ModeType } = pkg;
+import { ModeType } from "@prisma/client";
 
 export const createTestResultController = async (req, res) => {
   try {

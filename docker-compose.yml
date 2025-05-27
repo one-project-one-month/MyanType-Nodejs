@@ -3,22 +3,5 @@ services:
     build: .
     ports:
       - "3001:3001"
-    environment:
-      DATABASE_URL: mysql://user:password@mysql:3306/mydb
-    depends_on:
-      - mysql
-
-  mysql:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-volumes:
-  mysql_data:
+    env_file:
+      - .env

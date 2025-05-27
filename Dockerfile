@@ -11,7 +11,7 @@ RUN npm install
 COPY . .
 
 # Generate Prisma client (required if using Prisma)
-# RUN npx prisma generate
+RUN npx prisma generate
 
 # Start the server
 CMD ["npm", "start"]
