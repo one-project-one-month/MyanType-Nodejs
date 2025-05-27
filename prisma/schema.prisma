@@ -3,7 +3,110 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
+
+model User {
+  id             String   @id @default(uuid())
+  username       String   @unique
+  email          String   @unique
+  password       String
+  profilePicture String?
+  createdAt      DateTime @default(now())
+
+  testResults TestResult[]
+  themes      Theme[]
+  stats       UserStats?
+}
+
+model UserStats {
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  testsCompleted Int @default(0)
+
+  highest15sWpm Int @default(0)
+  accuracy15s   Int @default(0)
+
+  highest60sWpm Int @default(0)
+  accuracy60s   Int @default(0)
+
+  updatedAt DateTime @updatedAt
+}
+
+model TestResult {
+  id     Int     @id @default(autoincrement())
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  mode      ModeType
+  language  LanguageType
+  timeLimit Int?
+  wordLimit Int?
+
+  wpm             Int
+  raw             Int
+  accuracy        Int
+  charactersTyped Int
+  correct         Int
+  incorrect       Int
+  extra           Int
+  miss            Int
+  consistency     Int
+
+  timeTaken Int // Actual duration typed in seconds
+  createdAt DateTime @default(now())
+}
+
+model Theme {
+  id        Int      @id @default(autoincrement())
+  name      String
+  settings  Json
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+}
+
+enum ModeType {
+  TIME
+  WORDS
+  QUOTE
+  CUSTOM
+}
+
+enum LanguageType {
+  mm
+  en
+}
+
+// enum ChallengeStatus {
+//   PENDING
+//   ACCEPTED
+//   COMPLETED
+//   CANCELLED
+// }
+
+// model Challenge {
+//   id   String @id @default(uuid())
+//   code String @unique
+
+//   inviter   User   @relation("Inviter", fields: [inviterId], references: [id])
+//   inviterId String @unique
+
+//   invitee   User?   @relation("Invitee", fields: [inviteeId], references: [id])
+//   inviteeId String? @unique
+
+//   status ChallengeStatus @default(PENDING)
+
+//   createdAt DateTime  @default(now())
+//   startedAt DateTime?
+//   endedAt   DateTime?
+
+//   inviterSession   TestSession? @relation("InviterSession", fields: [inviterSessionId], references: [id])
+//   inviterSessionId Int?         @unique
+
+//   inviteeSession   TestSession? @relation("InviteeSession", fields: [inviteeSessionId], references: [id])
+//   inviteeSessionId Int?         @unique
+// }

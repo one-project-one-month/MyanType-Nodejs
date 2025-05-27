@@ -2,22 +2,33 @@
   "name": "myantype-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "node --watch src/server.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "seed": "node prisma/seed.js",
+    "cleanup": "node prisma/cleanup.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@prisma/client": "^6.7.0",
-    "@supabase/supabase-js": "^2.49.4",
+    "@faker-js/faker": "^9.8.0",
+    "@prisma/client": "^6.8.2",
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "google-translate-api-x": "^10.7.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.10",
+    "quotesy": "^1.0.10",
+    "random-words": "^2.0.1"
   },
   "devDependencies": {
     "dotenv": "^16.5.0",
-    "prisma": "^6.7.0"
+    "prisma": "^6.8.2"
   }
 }
