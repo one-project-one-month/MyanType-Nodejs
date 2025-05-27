@@ -5,9 +5,6 @@ import userProfile from "./userProfile.controller.js";
 
 const userProfileRouter = Router();
 
-userProfileRouter
-    .get("/userProfile", verifyAccessToken, userProfile, (req, res)=>{
-        res.redirect('localhost:3000/api/v1/user-profile/userProfile');
-    })
+userProfileRouter.get("/", verifyAccessToken, userProfile);
 
-    export default userProfileRouter;
+export default userProfileRouter;

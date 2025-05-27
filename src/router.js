@@ -8,9 +8,9 @@ import leaderboardRouter from "./features/leaderboard/leaderboard.route.js";
 const router = Router();
 
 router.use("/auth", authRouter);
-router.use("/user-profile", userProfileRouter);
+router.use("/me", userProfileRouter);
 router.use("/", WordRouter);
-router.use("/", testResultRouter);
+router.use("/result", testResultRouter);
 router.use("/leaderboard", leaderboardRouter);
 
 export default router;

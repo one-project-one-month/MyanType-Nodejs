@@ -23,7 +23,6 @@
     "express": "^5.1.0",
     "google-translate-api-x": "^10.7.2",
     "jsonwebtoken": "^9.0.2",
-    "nanoid": "^5.1.5",
     "nodemon": "^3.1.10",
     "quotesy": "^1.0.10",
     "random-words": "^2.0.1"

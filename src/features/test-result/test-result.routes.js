@@ -4,6 +4,6 @@ import optionalAuth from "../../middlewares/optionalAuth.js";
 
 const router = express.Router();
 
-router.post("/result", optionalAuth, createTestResultController);
+router.post("/", optionalAuth, createTestResultController);
 
 export default router;
