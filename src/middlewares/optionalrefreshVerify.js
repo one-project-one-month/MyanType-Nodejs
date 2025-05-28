@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const refreshAccessToken = (req, res, next) => {
+const optionalRefreshAccessToken = (req, res, next) => {
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
@@ -28,4 +28,4 @@ const refreshAccessToken = (req, res, next) => {
   }
   next();
 };
-export default refreshAccessToken;
+export default optionalRefreshAccessToken;
