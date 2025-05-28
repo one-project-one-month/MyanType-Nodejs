@@ -13,6 +13,8 @@ const optionalAuth = (req, res, next) => {
     req.user = decoded;
   } catch (error) {
     req.user = null; // token invalid or expired, treat as guest
+
+    return next();
   }
 
   next();

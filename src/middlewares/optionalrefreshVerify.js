@@ -4,7 +4,8 @@ const refreshAccessToken = (req, res, next) => {
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
-    return res.status(401).json({ message: "No refresh token provided" });
+    req.user = null;
+    return next();
   }
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
@@ -23,9 +24,8 @@ const refreshAccessToken = (req, res, next) => {
     });
     return res.json({ message: "New access token issued", decoded });
   } catch (error) {
-    return res
-      .status(403)
-      .json({ message: "Invalid or expired refresh token" });
+    req.user = null; // token invalid or expired, treat as guest
   }
+  next();
 };
 export default refreshAccessToken;
