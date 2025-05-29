@@ -77,6 +77,7 @@ const getUserProfile = async (id) => {
           user: {
             select: {
               username: true,
+              createdAt: true,
             },
           },
           userId: true,
