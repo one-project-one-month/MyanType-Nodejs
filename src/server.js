@@ -21,7 +21,8 @@ const corsOptions = {
 app.use(cookieParser());
 app.use(
   cors({
-    corsOptions,
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 app.use(express.json());
