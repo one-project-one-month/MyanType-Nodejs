@@ -21,7 +21,8 @@ const refreshAccessToken = (req, res, next) => {
       sameSite: "strict",
       maxAge: 60 * 60 * 1000,
     });
-    return res.json({ message: "New access token issued", decoded });
+    // return res.json({ message: "New access token issued", decoded });
+    next();
   } catch (error) {
     return res
       .status(403)
