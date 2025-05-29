@@ -22,7 +22,6 @@ const optionalRefreshAccessToken = (req, res, next) => {
       sameSite: "strict",
       maxAge: 60 * 60 * 1000,
     });
-    return res.json({ message: "New access token issued", decoded });
   } catch (error) {
     req.user = null; // token invalid or expired, treat as guest
   }

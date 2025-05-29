@@ -48,11 +48,9 @@ const getUserProfile = async (id) => {
   const user = await prisma.user.findUnique({
     where: { id },
     select: {
-      // userId:true,
       username: true,
       profilePicture: true,
       createdAt: true,
-      // stats: true,
       testResults: {
         orderBy: { createdAt: "desc" },
         take: 5,
