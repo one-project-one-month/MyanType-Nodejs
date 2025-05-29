@@ -74,6 +74,9 @@ const getUserProfile = async (id) => {
       },
       stats: {
         select: {
+          user: {
+            username: true,
+          },
           userId: true,
           testsCompleted: true,
           highest15sWpm: true,
