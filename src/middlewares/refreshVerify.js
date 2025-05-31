@@ -18,7 +18,6 @@ const refreshAccessToken = (req, res, next) => {
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
       maxAge: 60 * 60 * 1000,
     });
     // return res.json({ message: "New access token issued", decoded });
