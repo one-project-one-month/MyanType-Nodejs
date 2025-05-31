@@ -6,22 +6,13 @@ import router from "./router.js";
 
 const app = express();
 
-const whitelist = [ENV.CLIENT_URL];
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-};
-
 app.use(cookieParser());
+
+const allowedOrigins = ["http://localhost:5173", ENV.CLIENT_URL];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   })
 );
