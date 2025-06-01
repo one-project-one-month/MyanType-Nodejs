@@ -1,10 +1,10 @@
 import express from "express";
 import { createTestResultController } from "./test-result.controller.js";
-import verifyOrRefreshToken from "../../middlewares/verifyOrRefreshToken.js";
+import optionalAuthWithRefresh from "../../middlewares/optionalAuthWithRefresh.js";
 verifyOrRefreshToken;
 
 const router = express.Router();
 
-router.post("/", verifyOrRefreshToken, createTestResultController);
+router.post("/", optionalAuthWithRefresh, createTestResultController);
 
 export default router;
