@@ -23,6 +23,7 @@ export const createTestResultController = async (req, res) => {
     }
 
     const userId = req.user?.id;
+    console.log("testResult: " + userId);
 
     if (!userId) {
       return res.status(StatusCode.OK).json({
