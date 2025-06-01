@@ -1,6 +1,5 @@
 import { Router } from "express";
 import authController from "./auth.controller.js";
-import refreshAccessToken from "../../middlewares/refreshVerify.js";
 
 const authRouter = Router();
 
