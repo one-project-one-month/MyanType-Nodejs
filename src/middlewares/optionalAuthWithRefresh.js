@@ -8,6 +8,7 @@ const optionalAuthWithRefresh = (req, res, next) => {
   if (accessToken) {
     try {
       const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+      console.log("req.user.id " + decoded.id);
       req.user = decoded;
       return next();
     } catch (error) {
