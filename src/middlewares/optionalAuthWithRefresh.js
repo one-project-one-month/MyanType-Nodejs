@@ -29,12 +29,13 @@ const optionalAuthWithRefresh = (req, res, next) => {
 
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "none",
         maxAge: 60 * 60 * 1000,
       });
+      console.log("req.user.id " + decoded.id);
 
-      req.user = { id: decoded.id, email: decoded.email };
+      req.user = decoded;
       return next();
     } catch (error) {
       // Refresh token also invalid
