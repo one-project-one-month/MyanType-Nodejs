@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 const optionalAuthWithRefresh = (req, res, next) => {
   const accessToken = req.cookies.accessToken;
   const refreshToken = req.cookies.refreshToken;
+  console.log("access token: " + accessToken);
+  console.log("refresh token: " + refreshToken);
 
   // Try access token first
   if (accessToken) {
