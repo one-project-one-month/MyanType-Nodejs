@@ -22,23 +22,23 @@ const login = async (req, res) => {
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: true,
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Login Successfully!",
-          user,
-          accessToken,
-          refreshToken,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Login Successfully!",
+        user,
+        accessToken,
+        refreshToken,
+      });
     } else {
       res.status(400).json({ success: false, message: "Invalid" });
     }
