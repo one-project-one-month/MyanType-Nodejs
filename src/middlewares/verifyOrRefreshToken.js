@@ -19,6 +19,7 @@ const verifyOrRefreshToken = (req, res, next) => {
 
   // If access token is missing or invalid, try refresh token
   const refreshToken = req.cookies.refreshToken;
+  console.log("refreshtoken in userprofile " + refreshToken);
 
   if (!refreshToken) {
     return res.status(401).json({ message: "No refresh token provided" });
