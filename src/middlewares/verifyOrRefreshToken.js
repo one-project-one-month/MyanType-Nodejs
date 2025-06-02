@@ -40,6 +40,7 @@ const verifyOrRefreshToken = (req, res, next) => {
       secure: true,
       sameSite: "none",
       maxAge: 60 * 60 * 1000, // 1 hour
+      path: "/",
     });
 
     req.user = decoded; // attach user info from refresh token
