@@ -7,6 +7,9 @@ const verifyOrRefreshToken = (req, res, next) => {
   if (accessToken) {
     try {
       const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+      console.log("accesstoken in userprofile " + accessToken);
+      console.log("decoded id in userprofile" + decoded.id);
+
       req.user = decoded;
       return next(); // Access token is valid
     } catch (error) {
