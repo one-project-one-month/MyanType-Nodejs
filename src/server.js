@@ -12,7 +12,7 @@ const allowedOrigins = ["http://localhost:5173", ENV.CLIENT_URL];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: "https://myan-type.vercel.app",
     credentials: true,
   })
 );
