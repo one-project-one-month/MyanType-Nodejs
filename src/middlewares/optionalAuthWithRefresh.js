@@ -35,6 +35,7 @@ const optionalAuthWithRefresh = (req, res, next) => {
         secure: true,
         sameSite: "none",
         maxAge: 60 * 60 * 1000,
+        path: "/",
       });
       console.log("req.user.id " + decoded.id);
 
