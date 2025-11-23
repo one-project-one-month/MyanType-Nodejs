@@ -6,9 +6,22 @@ import router from "./router.js";
 
 const app = express();
 
+// When running behind a proxy (load balancer / reverse proxy) that terminates TLS,
+// Express needs to trust the proxy so `req.secure` and `req.protocol` reflect the
+// original request. This is required so our cookie helper can detect HTTPS.
+app.set("trust proxy", 1);
+
 app.use(cookieParser());
 
-const allowedOrigins = ["http://localhost:5173", "http://myan-type.kyawmgmglwin.site", "http://www.myan-type.kyawmgmglwin.site", ENV.CLIENT_URL];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://myan-type.kyawmgmglwin.site",
+  "http://www.myan-type.kyawmgmglwin.site",
+  // allow whatever is configured in ENV.CLIENT_URL (could be https)
+  ENV.CLIENT_URL,
+  // also accept https versions just in case
+  typeof ENV.CLIENT_URL === "string" && ENV.CLIENT_URL.replace(/^http:\/\//, "https://"),
+].filter(Boolean);
 
 app.use(
   cors({
