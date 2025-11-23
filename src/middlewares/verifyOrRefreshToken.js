@@ -13,6 +13,7 @@ const verifyOrRefreshToken = (req, res, next) => {
       req.user = decoded;
       return next(); // Access token is valid
     } catch (error) {
+      console.log("Access token verification failed:", error);
       // Access token may be expired — continue to try refreshing
     }
   }
@@ -37,7 +38,7 @@ const verifyOrRefreshToken = (req, res, next) => {
     // Set new access token in cookie
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "none",
       maxAge: 60 * 60 * 1000, // 1 hour
       path: "/",
