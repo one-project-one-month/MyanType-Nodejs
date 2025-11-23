@@ -52,8 +52,10 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    // Clear cookies using the same options (path/sameSite/secure) so browsers remove them.
+    const clearOpts = getCookieOptions(req, { maxAge: 0 });
+    res.clearCookie("accessToken", clearOpts);
+    res.clearCookie("refreshToken", clearOpts);
     return res
       .status(200)
       .json({ success: true, message: "Logout successfully" });
