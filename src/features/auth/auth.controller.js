@@ -20,16 +20,16 @@ const login = async (req, res) => {
     );
     if (user) {
       res.cookie("accessToken", accessToken, {
-        // httpOnly: true,
-        // secure: false,
-        // sameSite: "lax",
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/",
       });
       res.cookie("refreshToken", refreshToken, {
-        // httpOnly: true,
-        // secure: false,
-        // sameSite: "lax",
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/",
       });

@@ -37,9 +37,9 @@ const verifyOrRefreshToken = (req, res, next) => {
 
     // Set new access token in cookie
     res.cookie("accessToken", newAccessToken, {
-      // httpOnly: true,
-      // secure: false,
-      // sameSite: "lax",
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
       maxAge: 60 * 60 * 1000, // 1 hour
       path: "/",
     });
