@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { getCookieOptions } from "../utils/cookieOptions.js";
 
 const verifyOrRefreshToken = (req, res, next) => {
   const accessToken = req.cookies.accessToken;
@@ -35,14 +36,12 @@ const verifyOrRefreshToken = (req, res, next) => {
       { expiresIn: "1h" }
     );
 
-    // Set new access token in cookie
-    res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 60 * 60 * 1000, // 1 hour
-      path: "/",
-    });
+    // Set new access token in cookie (options adjusted for HTTP vs HTTPS)
+    res.cookie(
+      "accessToken",
+      newAccessToken,
+      getCookieOptions(req, { maxAge: 60 * 60 * 1000 })
+    );
 
     req.user = decoded; // attach user info from refresh token
     next();

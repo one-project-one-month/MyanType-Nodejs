@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { getCookieOptions } from "../utils/cookieOptions.js";
 
 const optionalAuthWithRefresh = (req, res, next) => {
   const accessToken = req.cookies.accessToken;
@@ -30,13 +31,11 @@ const optionalAuthWithRefresh = (req, res, next) => {
         { expiresIn: "1h" }
       );
 
-      res.cookie("accessToken", newAccessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 1000,
-        path: "/",
-      });
+      res.cookie(
+        "accessToken",
+        newAccessToken,
+        getCookieOptions(req, { maxAge: 60 * 60 * 1000 })
+      );
       console.log("req.user.id " + decoded.id);
 
       req.user = decoded;

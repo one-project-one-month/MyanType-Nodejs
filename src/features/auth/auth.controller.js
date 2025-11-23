@@ -1,5 +1,6 @@
 import { fa } from "@faker-js/faker";
 import authService from "./auth.service.js";
+import { getCookieOptions } from "../../utils/cookieOptions.js";
 const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -19,20 +20,17 @@ const login = async (req, res) => {
       password
     );
     if (user) {
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        path: "/",
-      });
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        path: "/",
-      });
+      res.cookie(
+        "accessToken",
+        accessToken,
+        getCookieOptions(req, { maxAge: 7 * 24 * 60 * 60 * 1000 })
+      );
+
+      res.cookie(
+        "refreshToken",
+        refreshToken,
+        getCookieOptions(req, { maxAge: 7 * 24 * 60 * 60 * 1000 })
+      );
 
       res.status(200).json({
         success: true,
