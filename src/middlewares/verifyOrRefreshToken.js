@@ -39,7 +39,7 @@ const verifyOrRefreshToken = (req, res, next) => {
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: false,
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 60 * 60 * 1000, // 1 hour
       path: "/",
     });
